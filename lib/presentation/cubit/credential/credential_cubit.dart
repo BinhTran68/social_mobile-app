@@ -12,8 +12,9 @@ class CredentialCubit extends Cubit<CredentialState> {
   final SignInUserUseCase signInUserUseCase;
   final SignUpUseCase signUpUseCase;
 
-  CredentialCubit(super.initialState,
-      {required this.signInUserUseCase, required this.signUpUseCase});
+  CredentialCubit(
+      {required this.signInUserUseCase, required this.signUpUseCase})
+      : super(CredentialInitial());
 
   Future<void> signInUser(
       {required String email, required String password}) async {

@@ -54,7 +54,7 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
 
   @override
   Future<void> signUpUser(UserEntity user) async {
-    return await userRemoteData.signOut();
+    return await userRemoteData.signUpUser(user);
   }
 
   @override

@@ -11,4 +11,3 @@ Widget appIconWidget({ThemeData? theme}) {
         color: theme != null ? theme.primaryColorLight : Colors.white),
   );
 }
- 

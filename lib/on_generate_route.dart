@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/presentation/pages/auth/sign_in_page.dart';
 import 'package:instagram_app/presentation/pages/auth/sign_up_page.dart';
+import 'package:instagram_app/presentation/pages/profile/edit_profile_page.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -11,10 +12,13 @@ class OnGenerateRoute {
         {
           return routeBuilder(const SignUpPage());
         }
-
       case PageConst.signInPage:
         {
           return routeBuilder(const SignInPage());
+        }
+      case PageConst.editProfilePage :
+        {
+          return routeBuilder(const EditProfilePage());
         }
     }
   }

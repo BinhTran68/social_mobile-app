@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/presentation/pages/home/widget/igtv._button_icon.dart';
 import 'package:instagram_app/presentation/pages/home/widget/message_fly_icon_button.dart';
-import 'package:instagram_app/presentation/widgets/app_icon_widget.dart';
+import 'package:instagram_app/presentation/widgets/icon_widget/app_icon_widget.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 import 'package:instagram_app/presentation/widgets/circular_image_widget.dart';
 

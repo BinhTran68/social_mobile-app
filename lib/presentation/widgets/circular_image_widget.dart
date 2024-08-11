@@ -3,18 +3,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 
-Widget circularImageWidget({required String url, required String name}) {
+Widget circularImageWidget(
+    {required String url,
+    String? name,
+    double widthCircular = 62,
+    double heightCircular = 62}) {
   return SizedBox(
-    width: 65.w,
-    height: 82.h,
+    width: name != null ? 65.w : widthCircular,
+    height: name != null ? 82.h : heightCircular,
     child: Column(
       children: [
         Stack(
           alignment: Alignment.center, //
           children: [
             Container(
-                width: 62,
-                height: 62,
+                width: widthCircular,
+                height: heightCircular,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                     gradient: const LinearGradient(
@@ -28,22 +32,27 @@ Widget circularImageWidget({required String url, required String name}) {
                     ))),
             Container(
               alignment: Alignment.center,
-              width: 59,
-              height: 59,
+              width: widthCircular * 0.95,
+              height: heightCircular * 0.95,
               decoration: BoxDecoration(
                 border: Border.all(width: 3),
                 borderRadius: BorderRadius.circular(100),
               ),
               child: ClipOval(
                 child: Image.network(
-                    width: 59, height: 59, fit: BoxFit.cover, url),
+                    width: widthCircular * 0.95,
+                    height: widthCircular * 0.95,
+                    fit: BoxFit.cover,
+                    url),
               ),
             ),
           ],
         ),
-        sizeVer(5.h),
-        appTextWidget(
-            text: name, fontSize: 12.sp, fontWeight: FontWeight.normal)
+        name != null ? sizeVer(5.h) : const SizedBox.shrink(),
+        name != null
+            ? appTextWidget(
+                text: name, fontSize: 12.sp, fontWeight: FontWeight.normal)
+            : SizedBox.shrink()
       ],
     ),
   );

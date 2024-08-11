@@ -18,4 +18,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       }
     });
   }
+
+  ThemeState get currentTheme => state;
 }

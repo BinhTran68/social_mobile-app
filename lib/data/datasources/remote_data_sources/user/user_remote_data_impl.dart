@@ -17,11 +17,10 @@ class UserRemoteDataImpl implements UserRemoteData {
   @override
   Future<void> createUser(UserEntity user) async {
     final userCollection = firebaseFirestore.collection(FirebaseConst.users);
-
     String uid = await getCurrentUid();
     userCollection.doc(uid).get().then((userDoc) {
       final newUser = UserModel(
-              uid: user.uid,
+              uid: uid,
               username: user.username,
               name: user.name,
               bio: user.bio,
@@ -35,7 +34,7 @@ class UserRemoteDataImpl implements UserRemoteData {
               totalPosts: user.totalPosts)
           .toJson();
 
-      if (userDoc.exists) {
+      if (!userDoc.exists) {
         userCollection.doc(uid).set(newUser);
       } else {
         userCollection.doc(uid).update(newUser);
@@ -82,9 +81,22 @@ class UserRemoteDataImpl implements UserRemoteData {
   }
 
   @override
-  Future<void> signInUser(UserEntity user) {
-    try {} on FirebaseAuthException catch (e) {}
-    throw UnimplementedError();
+  Future<void> signInUser(UserEntity user) async {
+    print(user);
+    try {
+      if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
+        firebaseAuth.signInWithEmailAndPassword(
+            email: user.email!, password: user.password!);
+      } else {
+        print("Fields can't empty!");
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        toast("user not found");
+      } else if (e.code == "wrong-password") {
+        toast("Invalid email or password");
+      }
+    }
   }
 
   @override
@@ -93,9 +105,21 @@ class UserRemoteDataImpl implements UserRemoteData {
   }
 
   @override
-  Future<void> signUpUser(UserEntity user) {
-    // TODO: implement signUpUser
-    throw UnimplementedError();
+  Future<void> signUpUser(UserEntity user) async {
+    try {
+      await firebaseAuth
+          .createUserWithEmailAndPassword(
+              email: user.email!, password: user.password!)
+          .then((currentUser) {
+        createUser(user);
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "email-already-in-use") {
+        toast("email is already taken");
+      } else {
+        toast("something went wrong");
+      }
+    }
   }
 
   @override
