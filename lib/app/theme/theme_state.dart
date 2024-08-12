@@ -13,6 +13,7 @@ class ThemeState {
       hintColor: const Color(0xFFFFFFFF),
       primaryColorLight: const Color(0xFFFFFFFF),
       indicatorColor: const Color(0XFF121212)));
+      
 
   static ThemeState get lightTheme => ThemeState(ThemeData.light().copyWith(
         backgroundColor: const Color(0XFFFFFFFF),

@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
-import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_app/presentation/pages/profile/widgets/popup_setting.dart';
 import 'package:instagram_app/presentation/pages/profile/widgets/statistics_item.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 import 'package:instagram_app/presentation/widgets/button_container_widget.dart';
 import 'package:instagram_app/presentation/widgets/circular_image_widget.dart';
 import 'package:instagram_app/presentation/widgets/icon_widget/menu_icon_widget.dart';
-import 'package:instagram_app/presentation/widgets/menu_entry.dart';
+import 'package:instagram_app/presentation/widgets/popup_bottom.dart';
 import 'package:instagram_app/presentation/widgets/title_and_start_or_end_icon.dart';
-import 'package:instagram_app/res/assets.dart';
 
 class ProfilePage extends StatefulWidget {
   final UserEntity user;
@@ -50,12 +47,8 @@ class _ProfilePageState extends State<ProfilePage> {
           Padding(
             padding: EdgeInsets.only(right: 18.w),
             child: menuIconWidget(onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return settingPopup(context: context);
-                },
-              );
+              popupBottom(
+                  context: context, child: settingPopup(context: context));
             }),
           )
         ],
@@ -80,7 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     text: "Edit profile",
                     isHasBorder: true,
                     onTapListener: () {
-
+                      Navigator.pushNamed(context, PageConst.editProfilePage,
+                          arguments: widget.user);
                     },
                   ),
                   sizeVer(16.h),

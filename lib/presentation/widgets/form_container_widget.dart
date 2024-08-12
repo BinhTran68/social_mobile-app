@@ -16,8 +16,10 @@ class FormContainerWidget extends StatefulWidget {
   final TextInputType? inputType;
   final double? borderRadius;
   final Icon? startIcon;
+  final Border? inputBorder;
+  final Color? inputColor;
 
-  const FormContainerWidget(
+   const FormContainerWidget(
       {super.key,
       this.textEditingController,
       this.filedKey,
@@ -30,7 +32,9 @@ class FormContainerWidget extends StatefulWidget {
       this.onFieldSubmitted,
       this.inputType,
       this.borderRadius,
-      this.startIcon});
+      this.startIcon,
+      this.inputBorder,
+        this.inputColor});
 
   @override
   State<FormContainerWidget> createState() => _FormContainerWidgetState();
@@ -44,7 +48,13 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: secondaryColor.withOpacity(0.35),
+          border: widget.inputBorder ?? const Border(
+            bottom: BorderSide(
+              width: 0.1,
+              color: Colors.transparent
+            )
+          ),
+          color: widget.inputColor ?? secondaryColor.withOpacity(0.35),
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 5)),
       child: TextFormField(
         style: const TextStyle(color: primaryColor),

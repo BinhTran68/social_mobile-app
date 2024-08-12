@@ -1,6 +1,9 @@
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 
 abstract class UserRemoteData {
+  
+
+  // auth
   Future<void> signInUser(UserEntity user);
   Future<void> signUpUser(UserEntity user);
   Future<bool> isSignIn();

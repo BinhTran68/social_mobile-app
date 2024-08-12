@@ -82,7 +82,6 @@ class UserRemoteDataImpl implements UserRemoteData {
 
   @override
   Future<void> signInUser(UserEntity user) async {
-    print(user);
     try {
       if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
         firebaseAuth.signInWithEmailAndPassword(
@@ -122,9 +121,11 @@ class UserRemoteDataImpl implements UserRemoteData {
     }
   }
 
+  // Hanle function update user. '
+
   @override
-  Future<void> updateUser(UserEntity user) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<void> updateUser(UserEntity user) async {
+    print(" UserEntity $user");
+    // final userCollection = firebaseFirestore.collection(FirebaseConst.users);
   }
 }

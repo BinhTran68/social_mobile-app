@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_app/consts.dart';
+import 'package:instagram_app/domain/entities/user/user_entity.dart';
 import 'package:instagram_app/presentation/pages/auth/sign_in_page.dart';
 import 'package:instagram_app/presentation/pages/auth/sign_up_page.dart';
-import 'package:instagram_app/presentation/pages/profile/edit_profile_page.dart';
+import 'package:instagram_app/presentation/pages/profile/edit_profile/edit_profile_page.dart';
 
 class OnGenerateRoute {
   static Route<dynamic>? route(RouteSettings settings) {
@@ -16,9 +17,12 @@ class OnGenerateRoute {
         {
           return routeBuilder(const SignInPage());
         }
-      case PageConst.editProfilePage :
+      case PageConst.editProfilePage:
         {
-          return routeBuilder(const EditProfilePage());
+          if (args is UserEntity) {
+            return routeBuilder(EditProfilePage(userEntity: args));
+          }
+          return routeBuilder(const NoPageFound());
         }
     }
   }
