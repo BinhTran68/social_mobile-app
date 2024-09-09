@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:instagram_app/app/enums/auth_status.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/data/datasources/remote_data_sources/user/user_remote_data.dart';
 import 'package:instagram_app/data/models/user_model.dart';
@@ -16,8 +16,10 @@ class UserRemoteDataImpl implements UserRemoteData {
 
   @override
   Future<void> createUser(UserEntity user) async {
+    print(user);
     final userCollection = firebaseFirestore.collection(FirebaseConst.users);
     String uid = await getCurrentUid();
+    print(uid);
     userCollection.doc(uid).get().then((userDoc) {
       final newUser = UserModel(
               uid: uid,
@@ -81,20 +83,27 @@ class UserRemoteDataImpl implements UserRemoteData {
   }
 
   @override
-  Future<void> signInUser(UserEntity user) async {
+  Future<AuthStatus> signInUser(UserEntity user) async {
+    // return message to view handle ??
     try {
       if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
-        firebaseAuth.signInWithEmailAndPassword(
+        await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
+        return AuthStatus.success;
       } else {
-        print("Fields can't empty!");
+        return AuthStatus.invalidEmailOrPassword;
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
-        toast("user not found");
+        return AuthStatus.userNotFound;
       } else if (e.code == "wrong-password") {
-        toast("Invalid email or password");
+        return AuthStatus.invalidEmailOrPassword;
+      } else {
+        return AuthStatus.invalidEmailOrPassword;
       }
+    } catch (e) {
+      return AuthStatus.invalidEmailOrPassword;
+      // Record Log to server
     }
   }
 
@@ -104,20 +113,29 @@ class UserRemoteDataImpl implements UserRemoteData {
   }
 
   @override
-  Future<void> signUpUser(UserEntity user) async {
+  Future<AuthStatus> signUpUser(UserEntity user) async {
     try {
+
       await firebaseAuth
           .createUserWithEmailAndPassword(
               email: user.email!, password: user.password!)
           .then((currentUser) {
         createUser(user);
       });
+      return AuthStatus.success;
     } on FirebaseAuthException catch (e) {
+      print(e.code);
       if (e.code == "email-already-in-use") {
-        toast("email is already taken");
-      } else {
-        toast("something went wrong");
+        return AuthStatus.emailAlreadyExits;
+      } else if (e.code == "invalid-email") {
+        return AuthStatus.invalidEmail;
+      } else if (e.code == "weak-password") {
+       return AuthStatus.weakPassword;
+      }else {
+        return AuthStatus.error;
       }
+    } catch (e) {
+      return AuthStatus.error;
     }
   }
 

@@ -1,11 +1,13 @@
+import 'package:instagram_app/app/enums/auth_status.dart';
 import 'package:instagram_app/data/datasources/remote_data_sources/post/post_remote_data.dart';
 import 'package:instagram_app/data/datasources/remote_data_sources/user/user_remote_data.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 import 'package:instagram_app/domain/repository/firebase_repository.dart';
 
-// Tầng hiện thực các interface
+// Infrastructure implements
 class FirebaseRepositoryImpl implements FirebaseRepository {
-  // Tiêm các phụ thuộc
+
+  // Injection dependencies
   final UserRemoteData userRemoteData;
   final PostRemoteData postRemoteData;
 
@@ -43,7 +45,7 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Future<void> signInUser(UserEntity user) async {
+  Future<AuthStatus> signInUser(UserEntity user) async {
     return await userRemoteData.signInUser(user);
   }
 
@@ -53,7 +55,7 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Future<void> signUpUser(UserEntity user) async {
+  Future<AuthStatus> signUpUser(UserEntity user) async {
     return await userRemoteData.signUpUser(user);
   }
 

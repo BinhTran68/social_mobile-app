@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_app/app/enums/auth_status.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
@@ -26,7 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
 
   bool _isSigningUp = false;
   bool _isUploading = false;
@@ -36,7 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _bioController.dispose();
+    _confirmPassword.dispose();
     super.dispose();
   }
 
@@ -46,13 +47,11 @@ class _SignUpPageState extends State<SignUpPage> {
         backgroundColor: backGroundColor,
         body: BlocConsumer<CredentialCubit, CredentialState>(
           listener: (context, credentialState) {
-            // Nếu tạo tài khoản thành công thì gọi đến hàm loggedIn
             if (credentialState is CredentialSuccess) {
               BlocProvider.of<AuthCubit>(context).loggedIn();
             }
-            // Nếu trạng thai trả về là fail thì toast ra cho người dùng
             if (credentialState is CredentialFailure) {
-              toast("Invalid Email and Password");
+                toast(credentialState.authStatus.toString());
             }
           },
           builder: (context, credentialState) {
@@ -101,8 +100,8 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           sizeVer(15),
           FormContainerWidget(
-            hintText: "Bio",
-            textEditingController: _bioController,
+            hintText: "Confirm Password",
+            textEditingController: _confirmPassword,
             isPasswordField: true,
           ),
           sizeVer(30),
@@ -145,15 +144,20 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() {
       _isSigningUp = true;
     });
+    if(_confirmPassword.text != _passwordController.text) {
+      _isSigningUp = false;
+      toast("Confirm password is not valid !");
+      return;
+    }
+
     BlocProvider.of<CredentialCubit>(context)
         .signUpUser(
             user: UserEntity(
                 email: _emailController.text,
                 username: _usernameController.text,
-                bio: _bioController.text,
                 password: _passwordController.text,
-                followers: [],
-                following: [],
+                followers: const [],
+                following: const [],
                 uid: '',
                 totalPosts: 0,
                 totalFollowers: 0,
@@ -163,10 +167,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _clear() {
     setState(() {
-      _usernameController.clear();
-      _bioController.clear();
-      _emailController.clear();
-      _passwordController.clear();
+      // _usernameController.clear();
+      // _confirmPassword.clear();
+      // _emailController.clear();
+      // _passwordController.clear();
       _isSigningUp = false;
     });
   }

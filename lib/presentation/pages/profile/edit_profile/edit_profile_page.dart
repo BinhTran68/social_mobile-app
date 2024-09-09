@@ -32,6 +32,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> userProfileInfoList() => [
+          detailInfoItemWidget(
+              value: widget.userEntity.name,
+              fieldName: "Name",
+              handleOnTap: () {}),
+          detailInfoItemWidget(
+              value: widget.userEntity.username,
+              fieldName: "UserName",
+              handleOnTap: () {}),
+        ];
+
     return Scaffold(
       appBar: appBarEditProfilePage(context),
       body: SingleChildScrollView(
@@ -83,8 +94,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Divider(
               color: secondaryColor.withOpacity(0.5),
             ),
-            detailInfoItemWidget(
-                value: widget.userEntity.name, fieldName: "Name")
+            Column(
+              children: userProfileInfoList(),
+            )
           ],
         ),
       ),

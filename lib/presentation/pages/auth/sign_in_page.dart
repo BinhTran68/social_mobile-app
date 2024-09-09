@@ -4,12 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_app/app/enums/auth_status.dart';
 import 'package:instagram_app/app/theme/theme_bloc.dart';
 import 'package:instagram_app/app/theme/theme_manager.dart';
 import 'package:instagram_app/app/theme/theme_state.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_app/presentation/cubit/credential/credential_cubit.dart';
+import 'package:instagram_app/presentation/pages/home/home_page.dart';
 import 'package:instagram_app/presentation/pages/main_screen/main_screen.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 import 'package:instagram_app/presentation/widgets/button_container_widget.dart';
@@ -20,6 +22,7 @@ import '../../widgets/progress_indicator_widget.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
+
 
   @override
   State<SignInPage> createState() => _SignInPageState();
@@ -48,7 +51,6 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       backgroundColor: theme?.backgroundColor,
       body: BlocConsumer<CredentialCubit, CredentialState>(
-        // Lắng nghe các state từ CredentialState gửi sang
         listener: (context, state) {
           if (state is CredentialSuccess) {
             BlocProvider.of<AuthCubit>(context).loggedIn();
@@ -57,7 +59,6 @@ class _SignInPageState extends State<SignInPage> {
             toast("Email and password invalid");
           }
         },
-        // Lắng nghe các sự kiện
         builder: (context, state) {
           if (state is CredentialSuccess) {
             return BlocBuilder<AuthCubit, AuthState>(
@@ -69,6 +70,9 @@ class _SignInPageState extends State<SignInPage> {
                 }
               },
             );
+          }
+          if (state is CredentialFailure) {
+            handleOnLoginFailure(context: context, status: state.authStatus );
           }
           return _bodyWidget(themeBloc);
         },
@@ -116,7 +120,7 @@ class _SignInPageState extends State<SignInPage> {
               },
             ),
             sizeVer(15.h),
-            _isSign ? const ProgressIndicatorWidget() : SizedBox.shrink(),
+            _isSign ? const ProgressIndicatorWidget() : const SizedBox.shrink(),
             Flexible(flex: 2,
                 fit: FlexFit.loose,child: Container()),
             const Divider(
@@ -154,7 +158,10 @@ class _SignInPageState extends State<SignInPage> {
 
   void _clear() {
     _isSign = false;
-    _emailController.clear();
     _passwordController.clear();
+  }
+
+  void handleOnLoginFailure({required BuildContext context, AuthStatus? status}) {
+    toast(status.toString());
   }
 }

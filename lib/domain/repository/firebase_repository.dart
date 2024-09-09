@@ -1,10 +1,11 @@
+import 'package:instagram_app/app/enums/auth_status.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 
 abstract class FirebaseRepository {
   // Khởi tạo
-  Future<void> signInUser(UserEntity user);
+  Future<AuthStatus> signInUser(UserEntity user);
 
-  Future<void> signUpUser(UserEntity user);
+  Future<AuthStatus> signUpUser(UserEntity user);
 
   Future<bool> isSignIn();
 
