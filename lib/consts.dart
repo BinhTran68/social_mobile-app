@@ -15,6 +15,12 @@ Widget sizeHor(double width) {
   return SizedBox(width: width);
 }
 
+// Space Config
+
+const double paddingHor = 15;
+const double paddingVer = 15;
+
+
 class PageConst {
   static const String editProfilePage = "editProfilePage";
   static const String updatePostPage = "updatePostPage";

@@ -1,9 +1,9 @@
 enum AuthStatus {
   success,
+  error,
   invalidEmailOrPassword,
   userNotFound,
   wrongPassword,
-  error,
   invalidEmail,
   weakPassword,
   emailAlreadyExits

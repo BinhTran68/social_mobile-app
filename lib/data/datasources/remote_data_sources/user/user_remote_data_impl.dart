@@ -16,10 +16,8 @@ class UserRemoteDataImpl implements UserRemoteData {
 
   @override
   Future<void> createUser(UserEntity user) async {
-    print(user);
     final userCollection = firebaseFirestore.collection(FirebaseConst.users);
     String uid = await getCurrentUid();
-    print(uid);
     userCollection.doc(uid).get().then((userDoc) {
       final newUser = UserModel(
               uid: uid,
@@ -42,6 +40,7 @@ class UserRemoteDataImpl implements UserRemoteData {
         userCollection.doc(uid).update(newUser);
       }
     }).catchError((error) {
+      print(error);
       toast("Some error occur");
     });
   }

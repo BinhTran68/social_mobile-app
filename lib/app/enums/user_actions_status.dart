@@ -1,0 +1,4 @@
+enum UserActionStatus {
+  success,
+  error,
+}

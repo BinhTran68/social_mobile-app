@@ -5,7 +5,9 @@ import 'package:instagram_app/app/theme/theme_state.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 
 
-AppBar appBarEditProfilePage(BuildContext context) {
+AppBar appBarEditProfilePage(BuildContext context, {
+  required VoidCallback handleOnSave
+}) {
   final theme = ThemeManager().themeData;
   return AppBar(
     leadingWidth: 72.w,
@@ -30,11 +32,15 @@ AppBar appBarEditProfilePage(BuildContext context) {
     ),
     actions: [
       Center(
-        child: Container(
-          padding: EdgeInsets.only(right: 13.w),
-          child: appTextWidget(text: "Done",
-              fontSize: 16,
-              color: ThemeState.secondPrimaryColor),
+        child: InkWell(
+          onTap: handleOnSave,
+          child: Container(
+            width: 50.w,
+            padding: EdgeInsets.only(right: 13.w),
+            child: appTextWidget(text: "Done",
+                fontSize: 16,
+                color: ThemeState.secondPrimaryColor),
+          ),
         ),
       )
     ],

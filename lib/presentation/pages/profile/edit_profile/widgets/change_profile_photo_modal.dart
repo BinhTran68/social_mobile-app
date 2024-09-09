@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,8 +8,10 @@ import 'package:instagram_app/presentation/pages/profile/edit_profile/widgets/ch
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 
 class ChangeProfilePhotoModal extends StatefulWidget {
+  final Function(File) onDataChanged;
+
   const ChangeProfilePhotoModal({super.key, required this.onDataChanged});
-  final Function(String) onDataChanged; // call back ra widget cha 1 function
+
 
   @override
   State<ChangeProfilePhotoModal> createState() =>
@@ -19,10 +19,7 @@ class ChangeProfilePhotoModal extends StatefulWidget {
 }
 
 class _ChangeProfilePhotoModalState extends State<ChangeProfilePhotoModal> {
-  bool _isUpdating = false;
-
   File? _image;
-
   Future selectImage() async {
     try {
       final pickedFile =
@@ -31,7 +28,7 @@ class _ChangeProfilePhotoModalState extends State<ChangeProfilePhotoModal> {
       setState(() {
         if (pickedFile != null) {
           _image = File(pickedFile.path);
-          widget.onDataChanged(_image!.path);
+          widget.onDataChanged(_image!);
         } else {
           print("no image has been selected");
         }

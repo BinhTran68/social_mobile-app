@@ -34,6 +34,14 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
+  Future<void> updateUserAvatar({
+    required File file
+  }) async {
+    emit(UserLoading());
+
+    print("Gọi hàm đến repo");
+  }
+
   Future<void> updateUser({required UserEntity user}) async {
     try {
       await updateUserUseCase.call(user);

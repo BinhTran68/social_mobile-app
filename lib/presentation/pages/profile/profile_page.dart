@@ -28,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   SampleItem? selectedMenu;
   @override
   void initState() {
+    super.initState();
     // TODO: implement initState
     print("current user ${widget.user}");
   }
@@ -64,8 +65,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   _buildAvatarAndStatisticsProfile(),
                   sizeVer(12.h),
                   _buildNameAndBioInfo(
-                      name: widget.user.name ?? widget.user.username!,
-                      bio: widget.user.bio!),
+                      name: widget.user.name ?? widget.user.email!,
+                      bio: widget.user.bio),
                   sizeVer(15.h),
                   ButtonContainerWidget(
                     height: 29.h,
