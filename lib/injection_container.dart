@@ -18,6 +18,7 @@ import 'package:instagram_app/domain/use_cases/firebase_usecases/user/is_sign_in
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/sign_in_user_usecase.dart';
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/sign_out_usecase.dart';
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/sign_up_user_usecase.dart';
+import 'package:instagram_app/domain/use_cases/firebase_usecases/user/update_user_avatar_usecase.dart';
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/update_user_usecase.dart';
 import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_app/presentation/cubit/credential/credential_cubit.dart';
@@ -40,7 +41,9 @@ Future<void> init() async {
   sl.registerFactory(() => UserCubit(
       getUsersUseCase: sl.call(),
       updateUserUseCase: sl.call(),
-      followUnFollowUseCase: sl.call()));
+      followUnFollowUseCase: sl.call(),
+     updateUserAvatarUseCase: sl.call()
+  ));
 
   sl.registerFactory(() => GetSingleUserCubit(getSingleUserUseCase: sl.call()));
 
@@ -54,6 +57,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => FollowUnFollowUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => SignUpUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => GetSingleUserUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => UpdateUserAvatarUseCase(firebaseRepository: sl.call()));
 
   // repository
 
@@ -62,6 +66,7 @@ Future<void> init() async {
 
   // repository remote
   sl.registerLazySingleton<UserRemoteData>(() => UserRemoteDataImpl(
+    firebaseStorage: sl.call(),
       firebaseAuth: sl.call(), firebaseFirestore: sl.call()));
 
   sl.registerLazySingleton<PostRemoteData>(() => PostRemoteDataImpl());

@@ -22,13 +22,13 @@ final class CredentialSuccess extends CredentialState {
 }
 
 final class CredentialFailure extends CredentialState {
-  final AuthStatus? authStatus;
+  final Status? status;
 
   const CredentialFailure({
-    this.authStatus,
+    this.status,
   });
   @override
-  List<Object?> get props => [authStatus];
+  List<Object?> get props => [status];
 
 
 }

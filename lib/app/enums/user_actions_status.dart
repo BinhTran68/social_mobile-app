@@ -1,4 +1,0 @@
-enum UserActionStatus {
-  success,
-  error,
-}

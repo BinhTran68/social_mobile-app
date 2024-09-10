@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:instagram_app/app/enums/auth_status.dart';
+import 'package:instagram_app/app/enums/status.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/sign_in_user_usecase.dart';
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/sign_up_user_usecase.dart';
@@ -21,12 +21,12 @@ class CredentialCubit extends Cubit<CredentialState> {
       {required String email, required String password}) async {
     emit(CredentialLoading()); // Phát ra trạng thái loading cho UI;
     try {
-      AuthStatus authStatus =   await signInUserUseCase
+      Status status =   await signInUserUseCase
           .call(UserEntity(email: email, password: password));
-      if(authStatus == AuthStatus.success) {
+      if(status == Status.success) {
         emit(CredentialSuccess());
       }
-      if(authStatus == AuthStatus.invalidEmailOrPassword) {
+      if(status == Status.invalidEmailOrPassword) {
           emit(CredentialFailure());
       }
 
@@ -41,16 +41,16 @@ class CredentialCubit extends Cubit<CredentialState> {
   Future<void> signUpUser({required UserEntity user}) async {
     emit(CredentialLoading());
     try {
-      AuthStatus authStatus =  await signUpUseCase.call(user);
-      if(authStatus == AuthStatus.success) {
+      Status status =  await signUpUseCase.call(user);
+      if(status == Status.success) {
         emit(CredentialSuccess());
       }else {
-        emit(CredentialFailure(authStatus: authStatus));
+        emit(CredentialFailure(status: status));
       }
     } on SocketException catch (_) {
-      emit(const CredentialFailure(authStatus: AuthStatus.error));
+      emit(const CredentialFailure(status: Status.error));
     } catch (_) {
-      emit(const CredentialFailure(authStatus: AuthStatus.error));
+      emit(const CredentialFailure(status: Status.error));
     }
   }
 }

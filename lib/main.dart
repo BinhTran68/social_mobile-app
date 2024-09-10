@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
                         if (authSate is Authenticated) {
                           return MainScreen(uid: authSate.uid);
                         } else {
-                          return const SignInPage();
+                          return  SignInPage();
                         }
                       },
                     );

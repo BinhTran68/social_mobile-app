@@ -18,66 +18,71 @@ import 'package:instagram_app/presentation/widgets/detailInfoItemWidget.dart';
 import 'package:instagram_app/presentation/widgets/icon_widget/overlay_loading.dart';
 import 'package:instagram_app/presentation/widgets/popup_bottom.dart';
 
-// Có nên truyền vào đây argrument
-class EditProfilePage extends StatefulWidget {
+
+
+class EditProfilePage extends StatelessWidget {
   final UserEntity userEntity;
   const EditProfilePage({super.key, required this.userEntity});
-
-  @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
-}
-
-class _EditProfilePageState extends State<EditProfilePage> {
-  final theme = ThemeManager().themeData;
-  late String imagePath;
-  late File avatarFile;
-  String currentImagePath =
-      "https://ik.imagekit.io/tvlk/blog/2021/09/du-lich-anh-2.jpg?tr=dpr-2,w-675";
-  bool isPreview = false;
-  bool isLoading = false;
-
-
+  
   @override
   Widget build(BuildContext context) {
-    List<Widget> userProfileInfoList() => [
-          detailInfoItemWidget(
-              value: widget.userEntity.name,
-              fieldName: "Name",
-              handleOnTap: () {}),
-          detailInfoItemWidget(
-              value: widget.userEntity.username,
-              fieldName: "UserName",
-              handleOnTap: () {}),
-          detailInfoItemWidget(
-              value: widget.userEntity.email,
-              fieldName: "Email",
-              handleOnTap: () {}),
-          detailInfoItemWidget(
-              value: widget.userEntity.bio,
-              fieldName: "Bio",
-              handleOnTap: () {}),
-        ];
+     String? currentImagePath = userEntity.profileUrl;
+     bool? isPreview = false;
 
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: appBarEditProfilePage(context, handleOnSave: ()  {
-              if(avatarFile != null) {
-                   handleOnChangeAvatar(avatarFile);
-              }else {
-                Navigator.pop(context);
-              }
-          }),
-          body: BlocConsumer<UserCubit, UserState>(
-            listener:   (context, userState) {
-              if(userState is UserLoading) {
-                setState(() {
-                  isLoading = true;
-                });
-              }
-            },
-            builder: (context, userState) {
-              return  SingleChildScrollView(
+    List<Widget> userProfileInfoList() => [
+      detailInfoItemWidget(
+          value: userEntity.name,
+          fieldName: "Name",
+          handleOnTap: () {}),
+      detailInfoItemWidget(
+          value: userEntity.username,
+          fieldName: "UserName",
+          handleOnTap: () {}),
+      detailInfoItemWidget(
+          value: userEntity.email,
+          fieldName: "Email",
+          handleOnTap: () {}),
+      detailInfoItemWidget(
+          value: userEntity.bio,
+          fieldName: "Bio",
+          handleOnTap: () {}),
+    ];
+
+    return BlocConsumer<UserCubit, UserState>(
+      listener: (context, userState) {
+        if (userState is UserSuccess) {
+          Navigator.pop(context);
+        }
+        if(userState is UserFailure) {
+          toast("");
+        }
+
+      },
+      builder: (context, userState) {
+        final avatarFile = (userState is UserLoaded)
+            ? userState.avatarFile
+            : null;
+
+        if(userState is UserLoaded) {
+            if(userState.currentImagePath != null) {
+              currentImagePath = userState.currentImagePath;
+              isPreview = userState.isPreview;
+            }
+        }
+        
+        final blocAction = BlocProvider.of<UserCubit>(context);
+
+        return Stack(
+          children: [
+            Scaffold(
+              appBar: appBarEditProfilePage(context, handleOnSave: () {
+                if (avatarFile != null) {
+                  blocAction.updateUserAvatar(file: avatarFile, uid: userEntity.uid!);
+                } else {
+                  Navigator.pop(context);
+                }
+              }),
+              body: SingleChildScrollView(
                 child: Column(
                   children: [
                     SizedBox(
@@ -91,8 +96,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   heightCircular: 95.h,
                                   widthCircular: 95.w,
                                   isShowBorder: false,
-                                  url: currentImagePath,
-                                  isPreviewImage: isPreview),
+                                  url: currentImagePath ?? "",
+                                  isPreviewImage: isPreview ?? false),
                             ),
                           ),
                           GestureDetector(
@@ -102,11 +107,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   child: ChangeProfilePhotoModal(
                                     onDataChanged: (data) {
                                       Navigator.pop(context);
-                                      setState(() {
-                                        currentImagePath = data.path;
-                                        avatarFile = data;
-                                        isPreview = true;
-                                      });
+                                      blocAction.onImageSelected(data);
                                     },
                                   ));
                             },
@@ -129,19 +130,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     Column(
                       children: userProfileInfoList(),
-                    )
+                    ),
                   ],
                 ),
-              );
-            },
-          )
-        ),
-        isLoading ? const OverlayLoading() : const SizedBox.shrink()
-      ],
+              ),
+            ),
+            (userState is UserLoading)
+                ? const OverlayLoading()
+                : const SizedBox.shrink(),
+          ],
+        );
+      },
     );
   }
-
-  void handleOnChangeAvatar(File file) {
-      BlocProvider.of<UserCubit>(context).updateUserAvatar(file: file);
-  }
 }
+

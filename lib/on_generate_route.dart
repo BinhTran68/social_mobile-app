@@ -15,7 +15,7 @@ class OnGenerateRoute {
         }
       case PageConst.signInPage:
         {
-          return routeBuilder(const SignInPage());
+          return routeBuilder( SignInPage());
         }
       case PageConst.editProfilePage:
         {

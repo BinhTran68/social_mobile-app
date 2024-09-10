@@ -1,8 +1,12 @@
-import 'package:instagram_app/app/enums/auth_status.dart';
+import 'dart:io';
+
+
+import 'package:instagram_app/app/enums/status.dart';
 import 'package:instagram_app/data/datasources/remote_data_sources/post/post_remote_data.dart';
 import 'package:instagram_app/data/datasources/remote_data_sources/user/user_remote_data.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 import 'package:instagram_app/domain/repository/firebase_repository.dart';
+import 'package:instagram_app/response/object_response.dart';
 
 // Infrastructure implements
 class FirebaseRepositoryImpl implements FirebaseRepository {
@@ -45,7 +49,7 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Future<AuthStatus> signInUser(UserEntity user) async {
+  Future<Status> signInUser(UserEntity user) async {
     return await userRemoteData.signInUser(user);
   }
 
@@ -55,12 +59,17 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Future<AuthStatus> signUpUser(UserEntity user) async {
+  Future<Status> signUpUser(UserEntity user) async {
     return await userRemoteData.signUpUser(user);
   }
 
   @override
   Future<void> updateUser(UserEntity user) async {
     return await userRemoteData.updateUser(user);
+  }
+
+  @override
+  Future<ObjectResponse> updateUserAvatar(File file, String fileName, uid) async {
+    return await userRemoteData.updateUserAvatar(file, fileName, uid);
   }
 }

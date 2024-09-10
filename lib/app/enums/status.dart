@@ -1,4 +1,5 @@
-enum AuthStatus {
+enum Status {
+  noStatus,
   success,
   error,
   invalidEmailOrPassword,

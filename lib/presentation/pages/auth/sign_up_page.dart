@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:instagram_app/app/enums/auth_status.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
 import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
@@ -51,7 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
               BlocProvider.of<AuthCubit>(context).loggedIn();
             }
             if (credentialState is CredentialFailure) {
-                toast(credentialState.authStatus.toString());
+                toast(credentialState.status.toString());
             }
           },
           builder: (context, credentialState) {

@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:instagram_app/app/enums/auth_status.dart';
+import 'package:instagram_app/app/enums/status.dart';
+
 import 'package:instagram_app/app/theme/theme_bloc.dart';
 import 'package:instagram_app/app/theme/theme_manager.dart';
 import 'package:instagram_app/app/theme/theme_state.dart';
@@ -20,148 +21,112 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../widgets/progress_indicator_widget.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
-
-
-  @override
-  State<SignInPage> createState() => _SignInPageState();
-}
-
-class _SignInPageState extends State<SignInPage> {
-
+class SignInPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isSign = false;
-  late ThemeData theme;
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final themeBloc = BlocProvider.of<ThemeBloc>(context);
-     theme = Theme.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme?.backgroundColor,
+      backgroundColor: theme.backgroundColor,
       body: BlocConsumer<CredentialCubit, CredentialState>(
         listener: (context, state) {
           if (state is CredentialSuccess) {
             BlocProvider.of<AuthCubit>(context).loggedIn();
-          }
-          if (state is CredentialFailure) {
-            toast("Email and password invalid");
+          } else if (state is CredentialFailure) {
+            handleOnLoginFailure(context: context, status: state.status);
           }
         },
         builder: (context, state) {
-          if (state is CredentialSuccess) {
+          if (state is CredentialLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is CredentialSuccess) {
             return BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 if (state is Authenticated) {
                   return MainScreen(uid: state.uid);
-                }else {
-                    return _bodyWidget(themeBloc);
+                } else {
+                  return _buildSignInForm(context, theme);
                 }
               },
             );
           }
-          if (state is CredentialFailure) {
-            handleOnLoginFailure(context: context, status: state.authStatus );
-          }
-          return _bodyWidget(themeBloc);
+          return _buildSignInForm(context, theme);
         },
       ),
     );
   }
 
-  Widget _bodyWidget(ThemeBloc themeBloc,) {
+  Widget _buildSignInForm(BuildContext context, ThemeData theme) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: SizedBox(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-                fit: FlexFit.loose,
-                flex: 2, child: Container()),
-            Center(
-                child: SvgPicture.asset(
-                  "assets/ic_instagram.svg",
-                  color: primaryColor,
-                )),
-            sizeVer(39.h),
-            FormContainerWidget(
-              hintText: "Email",
-              textEditingController: _emailController,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(fit: FlexFit.loose, flex: 2, child: Container()),
+          Center(
+            child: SvgPicture.asset(
+              "assets/ic_instagram.svg",
+              color: primaryColor,
             ),
-            sizeVer(12.h),
-            FormContainerWidget(
-              hintText: "Password",
-              isPasswordField: true,
-              textEditingController: _passwordController,
+          ),
+          sizeVer(39.h),
+          FormContainerWidget(
+            hintText: "Email",
+            textEditingController: _emailController,
+          ),
+          sizeVer(12.h),
+          FormContainerWidget(
+            hintText: "Password",
+            isPasswordField: true,
+            textEditingController: _passwordController,
+          ),
+          sizeVer(33.h),
+          Align(
+            alignment: Alignment.centerRight,
+            child: appTextWidget(
+              text: "Forgot Password",
+              color: theme.primaryColor.withAlpha(200),
             ),
-            sizeVer(33.h),
-            Align(
-                alignment: Alignment.centerRight,
-                child: appTextWidget(
-                    text: "Forgot Password",
-                    color: theme?.primaryColor.withAlpha(200))),
-            sizeVer(30.h),
-            ButtonContainerWidget(
-              text: "Sign in",
-              onTapListener: () {
-                handleOnSignIn();
-              },
-            ),
-            sizeVer(15.h),
-            _isSign ? const ProgressIndicatorWidget() : const SizedBox.shrink(),
-            Flexible(flex: 2,
-                fit: FlexFit.loose,child: Container()),
-            const Divider(
-              color: secondaryColor,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                appTextWidget(
-                    fontWeight: FontWeight.w400,
-                    text: "Don't have an account? "),
-                InkWell(
-                    onTap: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, PageConst.signUpPage, (route) => false);
-                    },
-                    child: appTextWidget(
-                        fontWeight: FontWeight.w600, text: "Sign Up? ")),
-              ],
-            )
-          ],
-        ),
+          ),
+          sizeVer(30.h),
+          ButtonContainerWidget(
+            text: "Sign in",
+            onTapListener: () {
+              handleOnSignIn(context);
+            },
+          ),
+          sizeVer(15.h),
+          const Divider(color: secondaryColor),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              appTextWidget(fontWeight: FontWeight.w400, text: "Don't have an account? "),
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(context, PageConst.signUpPage, (route) => false);
+                },
+                child: appTextWidget(fontWeight: FontWeight.w600, text: "Sign Up? "),
+              ),
+            ],
+          ),
+          Flexible(flex: 2, fit: FlexFit.loose, child: Container()),
+        ],
       ),
     );
   }
 
-  void handleOnSignIn() {
-    setState(() {
-      _isSign = true;
-    });
+  void handleOnSignIn(BuildContext context) {
     BlocProvider.of<CredentialCubit>(context).signInUser(
-        email: _emailController.text, password: _passwordController.text).then((
-        value) => _clear());
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
   }
 
-  void _clear() {
-    _isSign = false;
-    _passwordController.clear();
-  }
-
-  void handleOnLoginFailure({required BuildContext context, AuthStatus? status}) {
+  void handleOnLoginFailure({required BuildContext context, Status? status}) {
     toast(status.toString());
   }
 }
+

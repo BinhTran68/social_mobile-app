@@ -1,18 +1,27 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:instagram_app/app/enums/auth_status.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:instagram_app/app/enums/status.dart';
 import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/data/datasources/remote_data_sources/user/user_remote_data.dart';
 import 'package:instagram_app/data/models/user_model.dart';
 import 'package:instagram_app/domain/entities/user/user_entity.dart';
+import 'package:instagram_app/presentation/cubit/user/user_cubit.dart';
+import 'package:instagram_app/response/object_response.dart';
 
 class UserRemoteDataImpl implements UserRemoteData {
   // Nơi triển khai cụ thể các phương thức đã thiết kế
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firebaseFirestore;
+  final FirebaseStorage firebaseStorage;
 
   UserRemoteDataImpl(
-      {required this.firebaseAuth, required this.firebaseFirestore});
+      {
+        required this.firebaseStorage,
+        required this.firebaseAuth,
+        required this.firebaseFirestore});
 
   @override
   Future<void> createUser(UserEntity user) async {
@@ -82,26 +91,26 @@ class UserRemoteDataImpl implements UserRemoteData {
   }
 
   @override
-  Future<AuthStatus> signInUser(UserEntity user) async {
+  Future<Status> signInUser(UserEntity user) async {
     // return message to view handle ??
     try {
       if (user.email!.isNotEmpty && user.password!.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
             email: user.email!, password: user.password!);
-        return AuthStatus.success;
+        return Status.success;
       } else {
-        return AuthStatus.invalidEmailOrPassword;
+        return Status.invalidEmailOrPassword;
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
-        return AuthStatus.userNotFound;
+        return Status.userNotFound;
       } else if (e.code == "wrong-password") {
-        return AuthStatus.invalidEmailOrPassword;
+        return Status.invalidEmailOrPassword;
       } else {
-        return AuthStatus.invalidEmailOrPassword;
+        return Status.invalidEmailOrPassword;
       }
     } catch (e) {
-      return AuthStatus.invalidEmailOrPassword;
+      return Status.invalidEmailOrPassword;
       // Record Log to server
     }
   }
@@ -112,7 +121,7 @@ class UserRemoteDataImpl implements UserRemoteData {
   }
 
   @override
-  Future<AuthStatus> signUpUser(UserEntity user) async {
+  Future<Status> signUpUser(UserEntity user) async {
     try {
 
       await firebaseAuth
@@ -121,20 +130,20 @@ class UserRemoteDataImpl implements UserRemoteData {
           .then((currentUser) {
         createUser(user);
       });
-      return AuthStatus.success;
+      return Status.success;
     } on FirebaseAuthException catch (e) {
       print(e.code);
       if (e.code == "email-already-in-use") {
-        return AuthStatus.emailAlreadyExits;
+        return Status.emailAlreadyExits;
       } else if (e.code == "invalid-email") {
-        return AuthStatus.invalidEmail;
+        return Status.invalidEmail;
       } else if (e.code == "weak-password") {
-       return AuthStatus.weakPassword;
+       return Status.weakPassword;
       }else {
-        return AuthStatus.error;
+        return Status.error;
       }
     } catch (e) {
-      return AuthStatus.error;
+      return Status.error;
     }
   }
 
@@ -142,7 +151,46 @@ class UserRemoteDataImpl implements UserRemoteData {
 
   @override
   Future<void> updateUser(UserEntity user) async {
-    print(" UserEntity $user");
-    // final userCollection = firebaseFirestore.collection(FirebaseConst.users);
+    final userCollection = firebaseFirestore.collection(FirebaseConst.users);
+    Map<String, dynamic> userInformation = Map();
+
+    if (user.username != "" && user.username != null) userInformation['username'] = user.username;
+
+    if (user.website != "" && user.website != null) userInformation['website'] = user.website;
+
+    if (user.profileUrl != "" && user.profileUrl != null) userInformation['profileUrl'] = user.profileUrl;
+
+    if (user.bio != "" && user.bio != null) userInformation['bio'] = user.bio;
+
+    if (user.name != "" && user.name != null) userInformation['name'] = user.name;
+
+    if (user.totalFollowing != null) userInformation['totalFollowing'] = user.totalFollowing;
+
+    if (user.totalFollowers != null) userInformation['totalFollowers'] = user.totalFollowers;
+
+    if (user.totalPosts != null) userInformation['totalPosts'] = user.totalPosts;
+
+    userCollection.doc(user.uid).update(userInformation);
+
+  }
+
+  @override
+  Future<ObjectResponse> updateUserAvatar(File file, String fileName, uid) async {
+    ObjectResponse objectResponse = ObjectResponse(status: Status.success);
+    try {
+      Reference ref = firebaseStorage.ref().child('images/$fileName');
+      await ref.putFile(file);
+      String url = await ref.getDownloadURL();
+      // có được url thì update
+      UserEntity userEntity = UserEntity(uid: uid,profileUrl: url);
+      await updateUser(userEntity);
+
+
+      objectResponse.data = url;
+      return objectResponse;
+    } catch (e) {
+        objectResponse.status = Status.error;
+        return objectResponse;
+    }
   }
 }

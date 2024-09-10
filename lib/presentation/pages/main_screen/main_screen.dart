@@ -24,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+
     BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
     pageController = PageController();
     super.initState();
