@@ -22,6 +22,6 @@ abstract class UserRemoteData {
   Future<void> updateUser(UserEntity user);
   Future<void> followUnFollowUser(UserEntity user);
 
-   Future<ObjectResponse> updateUserAvatar(File file, String fileName, uid);
+  Future<ObjectResponse> updateUserAvatar(File file, String fileName, uid);
 
 }

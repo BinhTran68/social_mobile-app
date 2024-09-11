@@ -56,4 +56,42 @@ class UserEntity extends Equatable {
         totalPosts,
         imageFile
       ];
+
+  UserEntity copyWith({
+    String? uid,
+    String? username,
+    String? name,
+    String? bio,
+    String? website,
+    String? email,
+    String? profileUrl,
+    List? followers,
+    List? following,
+    num? totalFollowers,
+    num? totalFollowing,
+    num? totalPosts,
+    File? imageFile,
+    String? password,
+    String? otherUid,
+  }) {
+    return UserEntity(
+      uid: uid ?? this.uid,
+      username: username ?? this.username,
+      name: name ?? this.name,
+      bio: bio ?? this.bio,
+      website: website ?? this.website,
+      email: email ?? this.email,
+      profileUrl: profileUrl ?? this.profileUrl,
+      followers: followers ?? this.followers,
+      following: following ?? this.following,
+      totalFollowers: totalFollowers ?? this.totalFollowers,
+      totalFollowing: totalFollowing ?? this.totalFollowing,
+      totalPosts: totalPosts ?? this.totalPosts,
+      imageFile: imageFile ?? this.imageFile,
+      password: password ?? this.password,
+      otherUid: otherUid ?? this.otherUid,
+    );
+  }
+
+
 }

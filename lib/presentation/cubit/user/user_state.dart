@@ -21,6 +21,20 @@ final class UserSuccess extends UserState {
   List<Object> get props => [];
 }
 
+final class UserPopContext extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+final class UserUpdateSuccess extends UserState {
+  UserEntity currentUser;
+  UserUpdateSuccess({
+    required this.currentUser,
+  });
+  @override
+  List<Object> get props => [];
+}
+
 
 class UserLoaded extends UserState {
   final List<UserEntity> users;
@@ -40,12 +54,14 @@ class UserLoaded extends UserState {
 
 class UserFailure extends UserState {
   Status? status;
+  String? message;
 
    UserFailure({
-    this.status =  Status.noStatus
+    this.status =  Status.noStatus,
+     this.message = ""
   });
 
   @override
-  List<Object> get props => [status!];
+  List<Object> get props => [status!, message!];
 }
 

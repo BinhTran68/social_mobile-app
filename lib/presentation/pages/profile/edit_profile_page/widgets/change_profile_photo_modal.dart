@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_app/app/theme/theme_manager.dart';
 import 'package:instagram_app/consts.dart';
-import 'package:instagram_app/presentation/pages/profile/edit_profile/widgets/change_profile_photo_modal_item.dart';
+import 'package:instagram_app/presentation/pages/profile/edit_profile_page/widgets/change_profile_photo_modal_item.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 
 class ChangeProfilePhotoModal extends StatefulWidget {

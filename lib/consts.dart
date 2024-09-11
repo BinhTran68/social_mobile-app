@@ -6,6 +6,8 @@ const blueColor = Color.fromRGBO(0, 149, 246, 1);
 const primaryColor = Colors.white;
 const secondaryColor = Colors.grey;
 const darkGreyColor =  Color.fromRGBO(97, 97, 97, 1);
+Color fadedText = Colors.grey.withOpacity(0.6);
+
 
 Widget sizeVer(double height) {
   return SizedBox(height: height,);
@@ -21,6 +23,11 @@ const double paddingHor = 15;
 const double paddingVer = 15;
 
 
+// text
+
+const textFontSize = 14;
+const titleFontSize = 16;
+
 class PageConst {
   static const String editProfilePage = "editProfilePage";
   static const String updatePostPage = "updatePostPage";
@@ -33,6 +40,8 @@ class PageConst {
   static const String singleUserProfilePage = "singleUserProfilePage";
   static const String followingPage = "followingPage";
   static const String followersPage = "followersPage";
+  static const String updateFieldUserInfo = "updateFieldUserInfo";
+
 }
 
 // giá trị collection ở firebase 

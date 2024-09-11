@@ -2,43 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:instagram_app/app/theme/theme_manager.dart';
 import 'package:instagram_app/app/theme/theme_state.dart';
+import 'package:instagram_app/consts.dart';
 import 'package:instagram_app/presentation/widgets/app_text_widget.dart';
 
 
 AppBar appBarEditProfilePage(BuildContext context, {
-  required VoidCallback handleOnSave
+  required VoidCallback handleOnSave,
+  String? title
 }) {
   final theme = ThemeManager().themeData;
   return AppBar(
-    leadingWidth: 72.w,
+    centerTitle: true,
     leading:   SizedBox(
       height: 21,
-      child: Center(
+      child: Container(
+        alignment: Alignment.centerLeft,
         child: InkWell(
           onTap: () => Navigator.pop(context),
-          child: appTextWidget(text: "Cancel",
-              fontWeight: FontWeight.normal,
-              fontSize: 16,
-              color: theme?.hintColor
-          ),
+          child: const Icon(Icons.navigate_before_rounded, size: 35,),
         ),
       ),
     ),
-    title: Center(
-      child: appTextWidget(
-          fontSize: 16.sp,
-          text: "Edit Profile"
-      ),
+    title: appTextWidget(
+        fontSize: 16.sp,
+        text: title ?? "Edit Profile"
     ),
     actions: [
       Center(
-        child: InkWell(
+        child: GestureDetector(
           onTap: handleOnSave,
           child: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 10),
             width: 50.w,
-            padding: EdgeInsets.only(right: 13.w),
             child: appTextWidget(text: "Done",
-                fontSize: 16,
+                fontSize: textFontSize.sp,
                 color: ThemeState.secondPrimaryColor),
           ),
         ),
