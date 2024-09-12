@@ -13,25 +13,12 @@ import 'package:instagram_app/presentation/widgets/icon_widget/menu_icon_widget.
 import 'package:instagram_app/presentation/widgets/popup_bottom.dart';
 import 'package:instagram_app/presentation/widgets/title_and_start_or_end_icon.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   final UserEntity user;
 
-  const ProfilePage({super.key, required this.user});
+  ProfilePage({super.key, required this.user});
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-enum SampleItem { itemOne, itemTwo, itemThree }
-
-class _ProfilePageState extends State<ProfilePage> {
   SampleItem? selectedMenu;
-  @override
-  void initState() {
-    super.initState();
-    // TODO: implement initState
-    print("current user ${widget.user}");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
         leading: const SizedBox.shrink(),
         backgroundColor: Colors.transparent,
         title: titleAndStartOrEndIcon(
-          text: widget.user.username,
+          text: user.username,
         ),
         actions: [
           Padding(
@@ -54,19 +41,20 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 315.h,
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildAvatarAndStatisticsProfile(),
+                  _buildAvatarAndStatisticsProfile(user : user),
                   sizeVer(12.h),
                   _buildNameAndBioInfo(
-                      name: widget.user.name ?? widget.user.email!,
-                      bio: widget.user.bio),
+                      name: user.name ?? user.email!,
+                      bio: user.bio),
                   sizeVer(15.h),
                   ButtonContainerWidget(
                     height: 29.h,
@@ -75,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     isHasBorder: true,
                     onTapListener: () {
                       Navigator.pushNamed(context, PageConst.editProfilePage,
-                          arguments: widget.user);
+                          arguments: user);
                     },
                   ),
                   sizeVer(16.h),
@@ -94,17 +82,58 @@ class _ProfilePageState extends State<ProfilePage> {
                               "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/04/anh-avatar-dep-cho-con-gai-ngau.jpg",
                           name: "New"),
                     ],
-                  ),
-                  sizeVer(15.h),
+                  )
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+          Flexible(
+            child: DefaultTabController(
+              initialIndex: 1,
+              length: 3,
+              child: Column(
+                children: [
+                  const TabBar(
+                    tabs: <Widget>[
+                      Tab(
+                        icon: Icon(Icons.cloud_outlined),
+                      ),
+                      Tab(
+                        icon: Icon(Icons.beach_access_sharp),
+                      ),
+                      Tab(
+                        icon: Icon(Icons.brightness_5_sharp),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: <Widget>[
+                        Expanded(child: Container(
+                          height: 200,
+                          color: Colors.red,
+                        ))
+                        ,
+                        Center(
+                          child: Text("It's rainy here"),
+                        ),
+                        Center(
+                          child: Text("It's sunny here"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
+
+enum SampleItem { itemOne, itemTwo, itemThree }
 
 Widget _buildNameAndBioInfo({required String name, String? bio}) {
   return Column(
@@ -117,22 +146,22 @@ Widget _buildNameAndBioInfo({required String name, String? bio}) {
   );
 }
 
-Widget _buildAvatarAndStatisticsProfile() {
+Widget _buildAvatarAndStatisticsProfile({required UserEntity user}) {
   return Row(
     children: [
       circularImageWidget(
           widthCircular: 96,
           heightCircular: 96,
-          url:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxXp5DUBVtnfBxsd8hNqBgbrl23RM7zxLElw&s"),
+          url: user.profileUrl ?? ""
+      ),
       sizeHor(35.w),
       Expanded(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            statisticsItem(statistic: "560", type: "Posts"),
-            statisticsItem(statistic: "560", type: "Posts"),
-            statisticsItem(statistic: "560", type: "Posts"),
+            statisticsItem(statistic: user.totalPosts?.toString() , type: "posts"),
+            statisticsItem(statistic: user.followers?.length.toString(), type: "flowers"),
+            statisticsItem(statistic: user.following?.length.toString(), type: "flowing"),
           ],
         ),
       )

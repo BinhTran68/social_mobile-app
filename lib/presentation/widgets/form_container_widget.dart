@@ -18,7 +18,7 @@ class FormContainerWidget extends StatefulWidget {
   final Icon? startIcon;
   final Border? inputBorder;
   final Color? inputColor;
-
+  final double height;
    const FormContainerWidget(
       {super.key,
       this.textEditingController,
@@ -34,6 +34,7 @@ class FormContainerWidget extends StatefulWidget {
       this.borderRadius,
       this.startIcon,
       this.inputBorder,
+        this.height = 55,
         this.inputColor});
 
   @override
@@ -47,6 +48,7 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      height: widget.height,
       decoration: BoxDecoration(
           border: widget.inputBorder ?? const Border(
             bottom: BorderSide(
@@ -68,7 +70,7 @@ class _FormContainerWidgetState extends State<FormContainerWidget> {
         decoration: InputDecoration(
           border: InputBorder.none,
           contentPadding: EdgeInsets.only(
-              top: 10, bottom: 10, left: widget.startIcon == null ? 10 : -20),
+              top: 10, bottom: 10, left: widget.startIcon == null ? 5 : -20),
           hintText: widget.hintText,
           icon: widget.startIcon != null
               ? Padding(

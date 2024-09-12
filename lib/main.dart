@@ -6,6 +6,7 @@ import 'package:instagram_app/app/theme/theme_state.dart';
 import 'package:instagram_app/on_generate_route.dart';
 import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_app/presentation/cubit/credential/credential_cubit.dart';
+import 'package:instagram_app/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_app/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_app/presentation/cubit/user/user_cubit.dart';
 import 'package:instagram_app/presentation/pages/auth/sign_in_page.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
         BlocProvider(create: (_) => di.sl<CredentialCubit>()),
         BlocProvider(create: (_) => di.sl<UserCubit>()),
+        BlocProvider(create: (_) => di.sl<PostCubit>()),
         BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
         // BlocProvider(create: (_) => di.sl<GetSingleOtherUserCubit>()),
       ],

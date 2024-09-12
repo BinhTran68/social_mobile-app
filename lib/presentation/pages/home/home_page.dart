@@ -43,7 +43,9 @@ class HomePageState extends State<HomePage> {
         ),
         title: appIconWidget(theme: theme),
         actions: [
-          iGTVButton(onPressed: () {}),
+          iGTVButton(onPressed: () {
+            Navigator.pushNamed(context, PageConst.newPostPage);
+          }),
           messageFlyIconButton(onPressed: () {})
         ],
       ),

@@ -17,6 +17,9 @@ Widget sizeHor(double width) {
   return SizedBox(width: width);
 }
 
+
+
+
 // Space Config
 
 const double paddingHor = 15;
@@ -27,6 +30,11 @@ const double paddingVer = 15;
 
 const textFontSize = 14;
 const titleFontSize = 16;
+
+// App Config
+
+const String defaultAvatarConfig = "https://ik.imagekit.io/tvlk/blog/2021/09/du-lich-anh-2.jpg?tr=dpr-2,w-675";
+
 
 class PageConst {
   static const String editProfilePage = "editProfilePage";
@@ -41,6 +49,9 @@ class PageConst {
   static const String followingPage = "followingPage";
   static const String followersPage = "followersPage";
   static const String updateFieldUserInfo = "updateFieldUserInfo";
+  static const String newPostPage = "newPostPage";
+  static const String newPostAddCaptionPage = "newPostAddCaptionPage";
+
 
 }
 
@@ -63,6 +74,8 @@ void toast(String message) {
       textColor: Colors.white,
       fontSize: 16.0);
 }
+
+
 
 
 

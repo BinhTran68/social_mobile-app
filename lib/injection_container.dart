@@ -22,6 +22,7 @@ import 'package:instagram_app/domain/use_cases/firebase_usecases/user/update_use
 import 'package:instagram_app/domain/use_cases/firebase_usecases/user/update_user_usecase.dart';
 import 'package:instagram_app/presentation/cubit/auth/auth_cubit.dart';
 import 'package:instagram_app/presentation/cubit/credential/credential_cubit.dart';
+import 'package:instagram_app/presentation/cubit/post/post_cubit.dart';
 import 'package:instagram_app/presentation/cubit/user/get_single_user/get_single_user_cubit.dart';
 import 'package:instagram_app/presentation/cubit/user/user_cubit.dart';
 
@@ -44,6 +45,8 @@ Future<void> init() async {
       followUnFollowUseCase: sl.call(),
      updateUserAvatarUseCase: sl.call()
   ));
+
+  sl.registerFactory(() => PostCubit());
 
   sl.registerFactory(() => GetSingleUserCubit(getSingleUserUseCase: sl.call()));
 
